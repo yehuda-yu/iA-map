@@ -31,21 +31,7 @@ def load_data(path):
     for column in water_columns:
         data[column] = pd.to_numeric(data[column], errors='coerce')
 
-    # Create a GeoDataFrame with Point geometry
-    # geometry = [Point(x, y) for x, y in zip(data['Grid_E'], data['Grid_N'])]
-    gdf = gpd.GeoDataFrame(
-    data, geometry=gpd.points_from_xy(data.Grid_E, data.Grid_N))
-
-    # Filter out rows with 0 values in coordinates
-    gdf = gdf.query("Grid_N != 0 and Grid_E != 0")
-
-    # Define the coordinate reference system (CRS) for Africa
-    gdf.crs = {'init': 'epsg:32636'}
-
-    # drop field_1 column
-    gdf.drop(columns=['field_1'], inplace=True)
-
-    return gdf
+    return data
 
 # Function to create a map with Folium
 # @st.cache(allow_output_mutation=True)
