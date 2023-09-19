@@ -114,8 +114,7 @@ def display_points_on_map(m, gdf, column, threshold_value):
 st.title("Water Drilling Points in Uganda")
 
 # Load the data
-path = "dataset.shp"
-data = load_data(path)
+data = load_data()
 
 
 st.table(data.head())
