@@ -119,7 +119,7 @@ data = load_data()
 
 st.table(data.head())
 
-st.map(df,latitude='Grid_N',longitude='Grid_E',
+st.map(data,latitude='Grid_N',longitude='Grid_E',
 size='Nitrate',
 )
 """
