@@ -31,6 +31,8 @@ def load_data():
     for column in water_columns:
         data[column] = pd.to_numeric(data[column], errors='coerce')
 
+    data.rename(columns={'Grid_N': 'Latitude', 'Grid_E': 'Longitude'}, inplace=True)        
+
     return data
 
 # Function to create a map with Folium
