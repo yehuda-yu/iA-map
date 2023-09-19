@@ -16,8 +16,8 @@ def load_data():
     data = pd.read_csv(csv_file)
 
     # Convert the columns to numeric
-    data['lat'] = pd.to_numeric(data['Grid_N'])
-    data['long'] = pd.to_numeric(data['Grid_E'])
+    data['lat'] = pd.to_numeric(data['lat'])
+    data['long'] = pd.to_numeric(data['long'])
 
     # convert all water parameter columns to numeric
     water_columns = [ 'Ph',
