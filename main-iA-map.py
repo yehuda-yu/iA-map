@@ -113,6 +113,8 @@ st.title("Water Drilling Points in Uganda")
 # Load the data
 data = load_data()
 
+data['thresh'] = gdf_84['Nitrate'].apply(lambda x: 'green' if x < 10 else 'red')
+
 
 st.table(data.head())
 
@@ -120,7 +122,7 @@ st.map(data,
        latitude = 'lat',
        longitude='long',
        size='Nitrate',
-       color='Nitrate')
+       color='thresh')
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
