@@ -34,7 +34,7 @@ def load_data(path):
     # Create a GeoDataFrame with Point geometry
     # geometry = [Point(x, y) for x, y in zip(data['Grid_E'], data['Grid_N'])]
     gdf = gpd.GeoDataFrame(
-    data, geometry=geopandas.points_from_xy(data.Grid_E, data.Grid_N))
+    data, geometry=gpd.points_from_xy(data.Grid_E, data.Grid_N))
 
     # Filter out rows with 0 values in coordinates
     gdf = gdf.query("Grid_N != 0 and Grid_E != 0")
