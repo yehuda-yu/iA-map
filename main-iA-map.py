@@ -113,7 +113,7 @@ st.title("Water Drilling Points in Uganda")
 # Load the data
 data = load_data()
 
-data['thresh'] = gdf_84['Nitrate'].apply(lambda x: 'green' if x < 10 else 'red')
+data['thresh'] = data['Nitrate'].apply(lambda x: 'green' if x < 10 else 'red')
 
 
 st.table(data.head())
