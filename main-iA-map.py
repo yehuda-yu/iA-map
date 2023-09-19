@@ -121,7 +121,9 @@ data = load_data()
 
 st.table(data.head())
 
-st.map(data)
+st.map(data,
+       latitude = 'Latitude',
+      longitude='Longitude',)
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
