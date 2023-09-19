@@ -12,7 +12,7 @@ from shapely.geometry import Point
 def load_data(path):
         
     # load the data
-    csv_file = "Dataset.csv"
+    csv_file = "dataset.csv"
     data = gpd.read_file(csv_file)
 
     # Convert the columns to numeric
