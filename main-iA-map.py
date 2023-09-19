@@ -13,7 +13,7 @@ def load_data(path):
         
     # load the data
     csv_file = "dataset.csv"
-    data = gpd.read_file(csv_file)
+    data = pd.read_csv(csv_file)
 
     # drop geometry column
     data.drop(columns=['geometry'], inplace=True)
