@@ -9,7 +9,7 @@ from shapely.geometry import Point
 
 # Load your dataset
 # @st.cache_data
-def load_data(path):
+def load_data():
         
     # load the data
     csv_file = "dataset.csv"
@@ -119,6 +119,10 @@ data = load_data(path)
 
 
 st.table(data.head())
+
+st.map(df,latitude='Grid_N',longitude='Grid_E',
+size='Nitrate',
+)
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
