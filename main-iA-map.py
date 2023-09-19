@@ -46,8 +46,6 @@ def load_data(path):
 
     return gdf
 
-    return gdf
-
 # Function to create a map with Folium
 # @st.cache(allow_output_mutation=True)
 def create_base_map():
