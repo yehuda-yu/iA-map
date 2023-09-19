@@ -12,7 +12,36 @@ from shapely.geometry import Point
 def load_data(path):
         
     # load the data
-    gdf = gpd.read_file(path,dtype={'geometry': 'object'})
+    csv_file = "Dataset.csv"
+    data = gpd.read_file(csv_file)
+
+    # Convert the columns to numeric
+    data['Grid_N'] = pd.to_numeric(data['Grid_N'])
+    data['Grid_E'] = pd.to_numeric(data['Grid_E'])
+
+    # convert all water parameter columns to numeric
+    water_columns = [ 'Ph',
+        'Electrical Conductivity (EC)', 'Total dissolved solids', 'Turbidity',
+        'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
+        'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli',
+        'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
+    for column in water_columns:
+        data[column] = pd.to_numeric(data[column], errors='coerce')
+
+    # Create a GeoDataFrame with Point geometry
+    geometry = [Point(x, y) for x, y in zip(data['Grid_E'], data['Grid_N'])]
+    gdf = gpd.GeoDataFrame(data, geometry=geometry)
+
+    # Filter out rows with 0 values in coordinates
+    gdf = gdf.query("Grid_N != 0 and Grid_E != 0")
+
+    # Define the coordinate reference system (CRS) for Africa
+    gdf.crs = {'init': 'epsg:32636'}
+
+    # drop 	field_1 column
+    gdf.drop(columns=['field_1'], inplace=True)
+
+    return gdf
 
     return gdf
 
