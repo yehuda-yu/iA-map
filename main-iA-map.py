@@ -12,7 +12,7 @@ from shapely.geometry import Point
 def load_data(path):
         
     # load the data
-    gdf = gpd.read_file(path,dtype={'geometry': 'str'})
+    gdf = gpd.read_file(path,dtype={'geometry': 'object'})
 
     return gdf
 
