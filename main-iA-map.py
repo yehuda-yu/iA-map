@@ -16,7 +16,7 @@ def load_data(path):
     data = gpd.read_file(csv_file)
 
     # drop geometry column
-    gdf.drop(columns=['geometry'], inplace=True)
+    data.drop(columns=['geometry'], inplace=True)
 
     # Convert the columns to numeric
     data['Grid_N'] = pd.to_numeric(data['Grid_N'])
