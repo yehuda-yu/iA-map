@@ -12,15 +12,12 @@ from shapely.geometry import Point
 def load_data():
         
     # load the data
-    csv_file = "dataset.csv"
+    csv_file = "gdf_84.csv"
     data = pd.read_csv(csv_file)
 
-    # drop geometry column
-    data.drop(columns=['geometry'], inplace=True)
-
     # Convert the columns to numeric
-    data['Grid_N'] = pd.to_numeric(data['Grid_N'])
-    data['Grid_E'] = pd.to_numeric(data['Grid_E'])
+    data['lat'] = pd.to_numeric(data['Grid_N'])
+    data['long'] = pd.to_numeric(data['Grid_E'])
 
     # convert all water parameter columns to numeric
     water_columns = [ 'Ph',
@@ -29,9 +26,7 @@ def load_data():
         'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli',
         'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
     for column in water_columns:
-        data[column] = pd.to_numeric(data[column], errors='coerce')
-
-    data.rename(columns={'Grid_N': 'Latitude', 'Grid_E': 'Longitude'}, inplace=True)        
+        data[column] = pd.to_numeric(data[column], errors='coerce')      
 
     return data
 
@@ -122,8 +117,8 @@ data = load_data()
 st.table(data.head())
 
 st.map(data,
-       latitude = 'Latitude',
-      longitude='Longitude',)
+       latitude = 'lat',
+      longitude='long',)
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
