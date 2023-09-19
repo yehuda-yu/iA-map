@@ -119,9 +119,7 @@ data = load_data()
 
 st.table(data.head())
 
-st.map(data,latitude='Grid_N',longitude='Grid_E',
-size='Nitrate',
-)
+st.map(data)
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
