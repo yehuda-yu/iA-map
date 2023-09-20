@@ -13,7 +13,7 @@ import plotly.express as px
 
 def poligons():
     path = 'Uganda_districts2010.shp'
-    districts = gpd.read_file(shp_file)
+    districts = gpd.read_file(path)
         
     return districts
         
