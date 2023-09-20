@@ -31,8 +31,8 @@ st.sidebar.header("Customize Visualization")
 
 # Define lists of columns
 categorical_cols = ['Village','District','Date_Completed', 'BH Depth_1', 'BH Depth_2', 'BH Depth_3', 'BH Depth_4', 'Lithology_1', 'Lithology_2']
-numerical_cols = 'Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3', 'Yield_L/s_4', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
-threshold_cols = 'Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
+numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3', 'Yield_L/s_4', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
+threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
                        'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
                        'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
                        'Manganese', 'Total Coliforms']
