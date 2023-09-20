@@ -54,7 +54,6 @@ if parameter in categorical_cols:
         color=parameter,
         hover_data=[parameter, 'Village', 'District'],
         color_discrete_map="Set1",  # Use a categorical color map
-        size_max=15,
         zoom=8
     )
     units = ""
