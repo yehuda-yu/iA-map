@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 
 # Load your dataset
-@st.cache
+@st.cache_data
 def load_data():
     # Load the data from a CSV file
     csv_file = "gdf_84.csv"
@@ -27,20 +27,15 @@ data = load_data()
 
 # Sidebar for user input
 st.sidebar.header("Customize Visualization")
-parameters_cols = [ 'Depth_of_overburden',
-       'Total_Depth', 'Depth_drilled_in_bedrock', 'BH Depth_1', 'BH Depth_2',
-       'BH Depth_3', 'BH Depth_4', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3',
-       'Yield_L/s_4', 'Lithology_1', 'Lithology_2', 'Static_Water_Level',
-       'Stabilized_discharge(L/s)', 'Altitude_(m)', 'Date_Lab', 'Ph',
-       'Electrical Conductivity (EC)', 'Total dissolved solids', 'Turbidity',
-       'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
-       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Number',
-       'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
-
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", parameters_cols)
-threshold_value = st.sidebar.slider("Set Threshold Value", min_value=data[parameter].min(),
-                                    max_value=data[parameter].max(), value=data[parameter].median())
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", data.columns[2:])
+threshold_value = st.sidebar.text_input("Enter Threshold Value", data[parameter].median())
 units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
+
+# Convert threshold value to float
+try:
+    threshold_value = float(threshold_value)
+except ValueError:
+    st.sidebar.warning("Please enter a valid threshold value.")
 
 # Create a new column for color based on the threshold
 data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
@@ -79,6 +74,6 @@ st.sidebar.header("Instructions")
 st.sidebar.markdown(
     "1. Use the sidebar to customize the visualization."
     "2. Select a parameter to visualize from the dropdown menu."
-    "3. Adjust the threshold value using the slider."
+    "3. Enter the threshold value manually."
     "4. Enter the unit (e.g., mg/L) for the selected parameter."
 )
