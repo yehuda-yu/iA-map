@@ -20,6 +20,43 @@ def load_data():
     
     return data
 
+# Define the units and thresholds dictionary
+units_and_thresholds = {
+    "Ph": ("", (5.5, 9.5)),
+    "Electrical Conductivity (EC)": ("μS/cm", (2500,)),
+    "Total dissolved solids": ("mg/L", (1500,)),
+    "Colour": ("TCU", (50,)),
+    "Turbidity": ("NTU", (25,)),
+    "Hardness": ("mg/L", (600,)),
+    "Chloride": ("mg/L", (250,)),
+    "Cadmium (Cd)": ("mg/L", (0.003,)),
+    "Calcium (Ca)": ("mg/L", (150,)),
+    "Copper": ("mg/L", (1,)),
+    "Flouride": ("mg/L", (1.5,)),
+    "Iron": ("mg/L", (0.3,)),
+    "Manganese": ("mg/L", (0.1,)),
+    "Magneisum (Mg)": ("mg/L", (100,)),
+    "Nitrate (as NO3-)": ("mg/L", (45,)),
+    "Sodium (Na)": ("mg/L", (200,)),
+    "Chlorine Residue": ("mg/L", (0.2, 0.5)),
+    "Sulphate": ("mg/L", (400,)),
+    "Total Coliforms": ("CFU/100 ml", (0,)),
+    "E. Coli": ("CFU/100 ml", (0,)),
+    "Aluminium (Al)": ("mg/L", (0.2,)),
+    "Arsenic (As)": ("mg/L", (0.01,)),
+    "Nitrate": ("mg/L", (10,)),
+    "Zinc (Zn)": ("mg/L", (3,)),
+    "Lead (Pb)": ("mg/L", (0.01,)),
+    "Mercury (Hg)": ("mg/L", (0.001,)),
+    "Cyanide": ("mg/L", (0.01,)),
+    "Selenium (Se)": ("mg/L", (0.01,)),
+    "Barium (Ba)": ("mg/L", (0.7,)),
+    "Ammonia (NH3)": ("mg/L", (0.5,)),
+    "Nickel (Ni)": ("mg/L", (0.02,)),
+    "Chromium (Cr)": ("mg/L", (0.05,)),
+    "Cobalt (Co)": ("mg/L", ("-")),
+}
+
 # App UI
 st.title("Water Drilling Points in Uganda")
 
