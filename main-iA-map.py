@@ -27,7 +27,17 @@ data = load_data()
 
 # Sidebar for user input
 st.sidebar.header("Customize Visualization")
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", data.columns[2:])
+parameters_cols = [ 'Depth_of_overburden',
+       'Total_Depth', 'Depth_drilled_in_bedrock', 'BH Depth_1', 'BH Depth_2',
+       'BH Depth_3', 'BH Depth_4', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3',
+       'Yield_L/s_4', 'Lithology_1', 'Lithology_2', 'Static_Water_Level',
+       'Stabilized_discharge(L/s)', 'Altitude_(m)', 'Date_Lab', 'Ph',
+       'Electrical Conductivity (EC)', 'Total dissolved solids', 'Turbidity',
+       'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
+       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Number',
+       'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
+
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", parameters_cols)
 threshold_value = st.sidebar.slider("Set Threshold Value", min_value=data[parameter].min(),
                                     max_value=data[parameter].max(), value=data[parameter].median())
 units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
