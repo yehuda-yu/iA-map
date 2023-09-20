@@ -119,18 +119,20 @@ elif parameter in numerical_cols:
     pass
     
 elif parameter in threshold_cols:
-
+    
     # Set threshold value and color dictionary based on the selected column and dictionary
     threshold_value = float(units_and_thresholds[parameter][1][0])
+
+    # create column of color
+    data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
     # Create the map for threshold columns
     fig = px.scatter_mapbox(
         data.dropna(subset=[parameter]),
         lat='lat',
         lon='long',
-        color=parameter,
-        size=parameter,  # Set a default size for threshold columns
-        hover_data=[parameter, 'District'],
-        hover_name="Village",
+        color='Color',
+        size=parameter,
+        hover_data=[parameter, 'Village', 'District'],
         color_discrete_map={'Red': 'red', 'Green': 'green'},
         size_max=15,
         zoom=8
