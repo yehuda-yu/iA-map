@@ -174,7 +174,7 @@ if threshold_value is not None:
     )
 
 else:
-    fig_histogram = px.histogram(data, x=parameter, color=parameter, nbins=20, opacity=0.7)
+    fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.7)
     fig_histogram.update_layout(title=f"Distribution of {parameter}")
     fig_histogram.update_layout(
         legend_title_text=f"Units: {units}",
