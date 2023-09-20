@@ -41,7 +41,7 @@ units_and_thresholds = {
     "Chlorine Residue": ("mg/L", (0.2, 0.5)),
     "Sulphate": ("mg/L", (400,)),
     "Total Coliforms": ("CFU/100 ml", (0,)),
-    "E. Coli": ("CFU/100 ml", (0,)),
+    "E.Coli": ("CFU/100 ml", (0,)),
     "Aluminium (Al)": ("mg/L", (0.2,)),
     "Arsenic (As)": ("mg/L", (0.01,)),
     "Nitrate": ("mg/L", (10,)),
