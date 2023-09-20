@@ -52,7 +52,6 @@ if parameter in categorical_cols:
         lat='lat',
         lon='long',
         color=parameter,
-        size=10,  # Set a default size for categorical columns
         hover_data=[parameter, 'Village', 'District'],
         color_discrete_map="Set1",  # Use a categorical color map
         size_max=15,
