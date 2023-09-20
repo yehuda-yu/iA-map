@@ -82,6 +82,14 @@ st.plotly_chart(fig)
 fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.7,
                              color_discrete_map={'Red': 'red', 'Green': 'green'})
 fig_histogram.update_layout(title=f"Distribution of {parameter}")
+
+# Customize the legend of the histogram
+fig_histogram.update_layout(
+    legend_title_text=f"Threshold ({threshold_value} {units})",
+    showlegend=True,  # Display the legend
+    coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
+)
+
 st.plotly_chart(fig_histogram)
 
 # Provide instructions to users
