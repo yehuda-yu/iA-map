@@ -121,8 +121,8 @@ st.table(data.head())
 st.map(data,
        latitude = 'lat',
        longitude='long',
-       size='Nitrate',
-       color='thresh')
+       size='Nitrate',)
+       # color='thresh')
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
