@@ -9,14 +9,7 @@ from shapely.geometry import Point
 import plotly.express as px
 
 # Load your dataset
-# @st.cache_data
-
-def poligons():
-    path = 'Uganda_districts2010.shp'
-    districts = gpd.read_file(path)
-        
-    return districts
-        
+# @st.cache_data      
 def load_data():
         
     # load the data
@@ -125,8 +118,6 @@ data['thresh'] = data['Nitrate'].apply(lambda x: 'green' if x < 10 else 'red')
 
 
 st.table(data.head())
-poligons = poligons()
-st.table(poligons.head())
 
 st.map(data,
        latitude = 'lat',
