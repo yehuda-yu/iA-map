@@ -9,3 +9,5 @@ This app allows you to:
 - Visualize water drilling points on a map.
 - Customize the visualization by selecting a parameter to show.
 - Set threshold values for certain parameters.
+
+**link**: https://ia-map.streamlit.app/
