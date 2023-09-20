@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Load your dataset
-@st.cache_data
+@st.cache
 def load_data():
     # Load the data from a CSV file
     csv_file = "gdf_84.csv"
@@ -29,49 +29,92 @@ data = load_data()
 # Sidebar for user input
 st.sidebar.header("Customize Visualization")
 
-# define columns to choose from
-parameters_cols = ['Depth_of_overburden',
-       'Total_Depth', 'Depth_drilled_in_bedrock', 'BH Depth_1', 'BH Depth_2',
-       'BH Depth_3', 'BH Depth_4', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3',
-       'Yield_L/s_4', 'Lithology_1', 'Lithology_2', 'Static_Water_Level',
-       'Stabilized_discharge(L/s)', 'Altitude_(m)', 'Date_Lab', 'Ph',
-       'Electrical Conductivity (EC)', 'Total dissolved solids', 'Turbidity',
-       'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
-       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Number',
-       'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
+# Define lists of columns
+categorical_cols = ['Village','District','Date_Completed', 'BH Depth_1', 'BH Depth_2', 'BH Depth_3', 'BH Depth_4', 'Lithology_1', 'Lithology_2']
+numerical_cols = 'Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3', 'Yield_L/s_4', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
+threshold_cols = 'Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
+                       'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
+                       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
+                       'Manganese', 'Total Coliforms']
 
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", parameters_cols)
+# Define all available columns in your dataset
+all_columns = categorical_cols + numerical_cols + threshold_cols
 
-threshold_value = st.sidebar.text_input("Enter Threshold Value", data[parameter].median())
-units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
+# Allow the user to select a single column as the parameter to show
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns)
 
-# Convert threshold value to float
-try:
-    threshold_value = float(threshold_value)
-except ValueError:
-    st.sidebar.warning("Please enter a valid threshold value.")
+# Check if the selected column belongs to categorical, numerical, or threshold columns
+if parameter in categorical_cols:
+    
+    # Create the map for categorical columns
+    fig = px.scatter_mapbox(
+        data.dropna(subset=[parameter]),
+        lat='lat',
+        lon='long',
+        color=parameter,
+        size=10,  # Set a default size for categorical columns
+        hover_data=[parameter, 'Village', 'District'],
+        color_discrete_map="Set1",  # Use a categorical color map
+        size_max=15,
+        zoom=8
+    )
+    units = ""
+    threshold_value = None
+    pass
+    
+elif parameter in numerical_cols:
 
-# Create a new column for color based on the threshold
-data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
+    # Create the map for numerical columns without a threshold
+    fig = px.scatter_mapbox(
+        data.dropna(subset=[parameter]),
+        lat='lat',
+        lon='long',
+        color=parameter,
+        size=parameter,
+        hover_data=[parameter, 'Village', 'District'],
+        color_continuous_scale='Viridis',  # Replace with your desired color scale
+        size_max=15,
+        zoom=8
+    )
+    units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
+    threshold_value = None
+    pass
+    
+elif parameter in threshold_cols:
 
-# Create the map
-fig = px.scatter_mapbox(
-    data.dropna(subset=[parameter]),
-    lat='lat',
-    lon='long',
-    color='Color',
-    size=parameter,
-    hover_data=[parameter, 'Village', 'District'],
-    color_discrete_map={'Red': 'red', 'Green': 'green'},
-    size_max=15,
-    zoom=8
-)
+        # Use predefined dictionaries for threshold columns
+    threshold_dict = {
+        'Threshold_Column_1': 10.0,
+        'Threshold_Column_2': 20.0
+    }
+    color_dict = {
+        'Threshold_Column_1': {'Red': 'red', 'Green': 'green'},
+        'Threshold_Column_2': {'Red': 'red', 'Green': 'green'}
+    }
+    # Set threshold value and color dictionary based on the selected column
+    threshold_value = threshold_dict.get(parameter, 0.0)
+    color_map = color_dict.get(parameter, {'Red': 'red', 'Green': 'green'})
+    # Create the map for threshold columns
+    fig = px.scatter_mapbox(
+        data.dropna(subset=[parameter]),
+        lat='lat',
+        lon='long',
+        color=parameter,
+        size=10,  # Set a default size for threshold columns
+        hover_data=[parameter, 'Village', 'District'],
+        color_discrete_map=color_map,
+        size_max=15,
+        zoom=8
+    )
+    units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
+    pass
 
 # Set the minimum size of points
 fig.update_traces(marker=dict(sizemin=5))
 
-# Add a custom legend label with the threshold value
-fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
+# Add a custom legend label with the threshold value if applicable
+if threshold_value is not None:
+    fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
 
 fig.update_layout(mapbox_style="carto-positron")
 fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
@@ -80,23 +123,27 @@ fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 st.plotly_chart(fig)
 
 # Create a histogram below the map
-fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.7,
-                             color_discrete_map={'Red': 'red', 'Green': 'green'})
+fig_histogram = px.histogram(data, x=parameter, color=parameter, nbins=20, opacity=0.7)
 fig_histogram.update_layout(title=f"Distribution of {parameter}")
 
 # Customize the legend of the histogram
-fig_histogram.update_layout(
-    legend_title_text=f"Threshold ({threshold_value} {units})",
-    showlegend=True,  # Display the legend
-    coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
-)
+if threshold_value is not None:
+    fig_histogram.update_layout(
+        legend_title_text=f"Threshold ({threshold_value} {units})",
+        showlegend=True,
+        coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
+    )
+else:
+    fig_histogram.update_layout(
+        legend_title_text=f"Units: {units}",
+        showlegend=False
+    )
 
 st.plotly_chart(fig_histogram)
 
 # Provide instructions to users
 st.sidebar.header("Instructions")
 st.sidebar.markdown("1. Use the sidebar to customize the visualization.")
-st.sidebar.markdown("2. Select a parameter to visualize from the dropdown menu.")
-st.sidebar.markdown("3. Enter the threshold value manually.")
-st.sidebar.markdown("4. Enter the unit (e.g., mg/L) for the selected parameter.")
-
+st.sidebar.markdown("2. Select a column group: Categorical, Numerical, or Threshold.")
+st.sidebar.markdown("3. Select a parameter to visualize from the dropdown menu.")
+st.sidebar.markdown("4. Enter the unit (e.g., mg/L) for the selected parameter if applicable.")
