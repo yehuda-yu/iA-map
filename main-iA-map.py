@@ -1,151 +1,74 @@
 import streamlit as st
-import folium
-from folium import plugins
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import geopandas as gpd
-from shapely.geometry import Point
 import plotly.express as px
 
 # Load your dataset
-# @st.cache_data      
+@st.cache
 def load_data():
-        
-    # load the data
+    # Load the data from a CSV file
     csv_file = "gdf_84.csv"
     data = pd.read_csv(csv_file)
-
-    # Convert the columns to numeric
-    data['lat'] = pd.to_numeric(data['lat'])
-    data['long'] = pd.to_numeric(data['long'])
-
-    # convert all water parameter columns to numeric
-    water_columns = [ 'Ph',
-        'Electrical Conductivity (EC)', 'Total dissolved solids', 'Turbidity',
-        'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
-        'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli',
-        'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
-    for column in water_columns:
-        data[column] = pd.to_numeric(data[column], errors='coerce')      
-
+    
+    # Convert relevant columns to numeric
+    numeric_columns = ['lat', 'long', 'Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
+                       'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
+                       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
+                       'Manganese', 'Total Coliforms']
+    
+    data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
+    
     return data
 
-# Function to create a map with Folium
-# @st.cache(allow_output_mutation=True)
-def create_base_map():
-    """
-    Creates a Folium Map instance.
-    """
-    # Create a Folium Map instance
-    m = folium.Map(location=[1.373333, 32.290275], zoom_start=6)
-
-    # Add Esri Satellite tile layer
-    esri_tile = folium.TileLayer(
-        tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attr='Esri',
-        name='Esri Satellite',
-        overlay=False,
-        control=True
-    )
-    esri_tile.add_to(m)
-
-    # Add Stamen Terrain map layer
-    terrain_tile = folium.TileLayer(
-        tiles='https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
-        attr='Stamen Terrain',
-        name='Stamen Terrain',
-        overlay=False,
-        control=True,
-    )
-    terrain_tile.add_to(m)
-
-    # Add LayerControl to the map
-    folium.LayerControl().add_to(m)
-
-    return m
-
-# Function to display points on the map with dynamic threshold columns
-def display_points_on_map(m, gdf, column, threshold_value):
-    # Create threshold columns dynamically based on user input
-    below_threshold_col = f'{column}_below_threshold'
-    above_threshold_col = f'{column}_above_threshold'
-
-    gdf[below_threshold_col] = gdf[column].apply(lambda x: x if x < threshold_value else None)
-    gdf[above_threshold_col] = gdf[column].apply(lambda x: x if x >= threshold_value else None)
-
-    # Define marker options
-    marker_kwds = {
-        'radius': 6,
-    }
-
-    # Plot points below threshold with green color
-    below_threshold = gdf[~gdf[below_threshold_col].isnull()]
-    below_threshold.explore(
-        m=m,
-        column=below_threshold_col,
-        legend=False,
-        zoom_start=6,
-        name=f"{column} < {threshold_value}",
-        cmap='Greens',  # Use a green colormap
-        vmax=-1,       # Set the maximum value of the colormap
-        marker_kwds=marker_kwds,
-    )
-
-    # Plot points above threshold with red color
-    above_threshold = gdf[~gdf[above_threshold_col].isnull()]
-    above_threshold.explore(
-        m=m,
-        column=above_threshold_col,
-        legend=False,
-        zoom_start=6,
-        name=f"{column} >= {threshold_value}",
-        cmap='Reds',  # Use a red colormap
-        vmax=0.91,     # Set the minimum value of the colormap
-        marker_kwds=marker_kwds,
-    )
-
-    return m
-
 # App UI
-
 st.title("Water Drilling Points in Uganda")
 
 # Load the data
 data = load_data()
 
-data['thresh'] = data['Nitrate'].apply(lambda x: 'green' if x < 10 else 'red')
+# Sidebar for user input
+st.sidebar.header("Customize Visualization")
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", data.columns[2:])
+threshold_value = st.sidebar.slider("Set Threshold Value", min_value=data[parameter].min(),
+                                    max_value=data[parameter].max(), value=data[parameter].median())
+units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
 
+# Create a new column for color based on the threshold
+data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
 
-st.table(data.head())
+# Create the map
+fig = px.scatter_mapbox(
+    data,
+    lat='lat',
+    lon='long',
+    color='Color',
+    size=parameter,
+    hover_data=[parameter, 'Village', 'District'],
+    color_discrete_map={'Red': 'red', 'Green': 'green'},
+    size_max=15,
+    zoom=8
+)
 
-st.map(data,
-       latitude = 'lat',
-       longitude='long',
-       size='Nitrate',)
-       # color='thresh')
+# Set the minimum size of points
+fig.update_traces(marker=dict(sizemin=5))
 
-# Add plotly map
-fig = px.scatter_mapbox(data, lat='lat', lon='long', size='Nitrate', zoom=10)
-fig.update_layout(mapbox_style='open-street-map')
+# Add a custom legend label with the threshold value
+fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
+
+fig.update_layout(mapbox_style="carto-positron")
+fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+# Show the map
 st.plotly_chart(fig)
-"""
-# Parameter selection dropdown
-selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
 
-# Threshold value input
-threshold_value = st.number_input("Enter Threshold Value", min_value=0.0, max_value=100.0)
+# Create a histogram below the map
+st.header(f"Distribution of {parameter}")
+st.plotly_chart(px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.7))
 
-# Create and display the map
-st.subheader("Map Visualization")
-
- # Create a base map (cached)
-base_map = create_base_map()
-
-# Display points on the map based on the user's input
-m = display_points_on_map(base_map, data, selected_parameter, threshold_value)
-
-# Display the map using Streamlit
-st.subheader("Map Visualization")
-st.write(m)
-"""
+# Provide instructions to users
+st.sidebar.header("Instructions")
+st.sidebar.markdown(
+    "1. Use the sidebar to customize the visualization."
+    "2. Select a parameter to visualize from the dropdown menu."
+    "3. Adjust the threshold value using the slider."
+    "4. Enter the unit (e.g., mg/L) for the selected parameter."
+)
