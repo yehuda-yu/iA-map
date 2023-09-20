@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
-import pydeck as pdk
+import plotly.express as px
 
 # Load your dataset
 # @st.cache_data
@@ -125,25 +125,10 @@ st.map(data,
        size='Nitrate',)
        # color='thresh')
 
-# Add 3d map
-st.pydeck_chart(pdk.Deck(
-    map_style=None,
-    initial_view_state=pdk.ViewState(
-        latitude=37.76,
-        longitude=-122.4,
-        zoom=11,
-        pitch=50,
-    ),
-    layers=[
-        pdk.Layer(
-           'ScatterplotLayer',
-           data=data,
-           get_position='[long, lat]',
-           get_color='[255, 255, 255, 255]',
-           get_radius='Nitrate',
-        ),
-    ],
-))
+# Add plotly map
+fig = px.scatter_mapbox(data, lat='lat', lon='long', size='Nitrate', zoom=10)
+fig.update_layout(mapbox_style='open-street-map')
+st.plotly_chart(fig)
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
