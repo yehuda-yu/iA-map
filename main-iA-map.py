@@ -121,6 +121,7 @@ fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 # Show the map
 st.plotly_chart(fig)
 
+"""
 # Create a histogram below the map
 fig_histogram = px.histogram(data, x=parameter, color=parameter, nbins=20, opacity=0.7)
 fig_histogram.update_layout(title=f"Distribution of {parameter}")
@@ -139,7 +140,7 @@ else:
     )
 
 st.plotly_chart(fig_histogram)
-
+"""
 # Provide instructions to users
 st.sidebar.header("Instructions")
 st.sidebar.markdown("1. Use the sidebar to customize the visualization.")
