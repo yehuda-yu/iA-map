@@ -95,11 +95,11 @@ st.plotly_chart(fig_histogram)
 # Provide instructions to users
 st.sidebar.header("Instructions")
 st.sidebar.markdown(
-    "1. Use the sidebar to customize the visualization."
-    
-    "2. Select a parameter to visualize from the dropdown menu."
-    
-    "3. Enter the threshold value manually."
-    
+    "1. Use the sidebar to customize the visualization."(
+ st.sidebar.markdown(   
+    "2. Select a parameter to visualize from the dropdown menu."(
+ st.sidebar.markdown(
+    "3. Enter the threshold value manually."(
+ st.sidebar.markdown(    
     "4. Enter the unit (e.g., mg/L) for the selected parameter."
 )
