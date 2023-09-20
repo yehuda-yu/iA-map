@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
 from shapely.geometry import Point
+import pydeck as pdk
 
 # Load your dataset
 # @st.cache_data
@@ -123,6 +124,26 @@ st.map(data,
        longitude='long',
        size='Nitrate',)
        # color='thresh')
+
+# Add 3d map
+st.pydeck_chart(pdk.Deck(
+    map_style=None,
+    initial_view_state=pdk.ViewState(
+        latitude=37.76,
+        longitude=-122.4,
+        zoom=11,
+        pitch=50,
+    ),
+    layers=[
+        pdk.Layer(
+           'ScatterplotLayer',
+           data=data,
+           get_position='[long, lat]',
+           get_color='[255, 255, 255, 255]',
+           get_radius='Nitrate',
+        ),
+    ],
+))
 """
 # Parameter selection dropdown
 selected_parameter = st.selectbox("Select Parameter to Visualize", data.columns)
