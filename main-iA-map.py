@@ -60,6 +60,11 @@ units_and_thresholds = {
 # App UI
 st.title("Water Drilling Points in Uganda")
 
+
+# Provide instructions to users
+st.sidebar.header("Instructions")
+st.sidebar.markdown("Select a parameter to visualize from the dropdown menu.")
+
 # Load the data
 data = load_data()
 
@@ -78,7 +83,7 @@ threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids'
 all_columns = categorical_cols + numerical_cols + threshold_cols
 
 # Allow the user to select a single column as the parameter to show
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns)
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns,'Nitrate')
 
 # Check if the selected column belongs to categorical, numerical, or threshold columns
 if parameter in categorical_cols:
@@ -178,9 +183,3 @@ else:
 
 st.plotly_chart(fig_histogram)
 
-# Provide instructions to users
-st.sidebar.header("Instructions")
-st.sidebar.markdown("1. Use the sidebar to customize the visualization.")
-st.sidebar.markdown("2. Select a column group: Categorical, Numerical, or Threshold.")
-st.sidebar.markdown("3. Select a parameter to visualize from the dropdown menu.")
-st.sidebar.markdown("4. Enter the unit (e.g., mg/L) for the selected parameter if applicable.")
