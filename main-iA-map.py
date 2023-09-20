@@ -41,6 +41,7 @@ parameters_cols = ['Depth_of_overburden',
        'Suspended solids (total)', 'Manganese', 'Total Coliforms',]
 
 parameter = st.sidebar.selectbox("Select a Parameter to Visualize", parameters_cols)
+
 threshold_value = st.sidebar.text_input("Enter Threshold Value", data[parameter].median())
 units = st.sidebar.text_input("Enter Unit (e.g., mg/L, °C)", "mg/L")
 
@@ -55,7 +56,7 @@ data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value el
 
 # Create the map
 fig = px.scatter_mapbox(
-    data,
+    data.dropna(subset=[parameter]),
     lat='lat',
     lon='long',
     color='Color',
