@@ -17,6 +17,11 @@ def load_data():
                        'Manganese', 'Total Coliforms']
     
     data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
+
+    # # replace 'BH Depth_1', 'BH Depth_2','BH Depth_3', 'BH Depth_4', 'Yield_L/s_1' names to 'First Water Strike Depth'...
+    data = data.rename(columns={'BH Depth_1': 'First Water Strike Depth', 'BH Depth_2': 'Second Water Strike Depth', 'BH Depth_3': 'Third Water Strike Depth', 'BH Depth_4': 'Fourth Water Strike Depth', })
+    # replace Yield_L/s_1 to First Water Strike Yield
+    data = data.rename(columns={'Yield_L/s_1': 'First Water Strike Yield', 'Yield_L/s_2': 'Second Water Strike Yield', 'Yield_L/s_3': 'Third Water Strike Yield', 'Yield_L/s_4': 'Fourth Water Strike Yield', })
     
     return data
 
@@ -72,8 +77,10 @@ data = load_data()
 st.sidebar.header("Customize Visualization")
 
 # Define lists of columns
-categorical_cols = ['Village','District','Date_Completed', 'BH Depth_1', 'BH Depth_2', 'BH Depth_3', 'BH Depth_4', 'Lithology_1', 'Lithology_2']
-numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock', 'Yield_L/s_1', 'Yield_L/s_2', 'Yield_L/s_3', 'Yield_L/s_4', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
+categorical_cols = ['Village','District','Date_Completed','First Water Strike Depth',
+       'Second Water Strike Depth', 'Third Water Strike Depth', 'Fourth Water Strike Depth', 'Lithology_1', 'Lithology_2']
+numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock','First Water Strike Yield ','Second Water Strike Yield', 'Third Water Strike Yield',
+                  'Fourth Water Strike Yield', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
 threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
                        'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
                        'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
