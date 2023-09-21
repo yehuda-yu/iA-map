@@ -79,7 +79,7 @@ st.sidebar.header("Customize Visualization")
 # Define lists of columns
 categorical_cols = ['Village','District','Date_Completed','First Water Strike Depth',
        'Second Water Strike Depth', 'Third Water Strike Depth', 'Fourth Water Strike Depth', 'Lithology_1', 'Lithology_2']
-numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock','First Water Strike Yield ','Second Water Strike Yield', 'Third Water Strike Yield',
+numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock','First Water Strike Yield','Second Water Strike Yield', 'Third Water Strike Yield',
                   'Fourth Water Strike Yield', 'Static_Water_Level', 'Stabilized_discharge(L/s)', 'Altitude_(m)',]
 threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
                        'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
