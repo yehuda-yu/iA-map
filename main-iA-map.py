@@ -121,7 +121,7 @@ elif parameter in numerical_cols:
         size=parameter,
         hover_data=[parameter, 'Village', 'District'],
         hover_name="Village",
-        color_continuous_scale='Viridis',  # Replace with your desired color scale
+        color_continuous_scale='plasma',  # Replace with your desired color scale
         size_max=15,
         zoom=8
     )
