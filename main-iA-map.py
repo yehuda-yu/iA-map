@@ -169,19 +169,20 @@ st.plotly_chart(fig)
 # Create a histogram below the map
 if threshold_value is not None:
     # Create a histogram below the map
-    fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.7,
+    fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.8,
                                  color_discrete_map={'Red': 'red', 'Green': 'green'})
     fig_histogram.update_layout(title=f"Distribution of {parameter}")
     
     # Customize the legend of the histogram
     fig_histogram.update_layout(
         legend_title_text=f"Threshold ({threshold_value} {units})",
+        color_discrete_sequence=['indianred'],
         showlegend=True,  # Display the legend
         coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
     )
 
 else:
-    fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.7)
+    fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.8,color_discrete_sequence=['indianred'])
     fig_histogram.update_layout(title=f"Distribution of {parameter}")
     fig_histogram.update_layout(
         legend_title_text=f"Units: {units}",
