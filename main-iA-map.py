@@ -150,6 +150,28 @@ try:
         )
         units = units_and_thresholds[parameter][0]
 
+    elif parameter == 'Ph':
+        # Get the lower and upper threshold values for pH
+        lower_threshold, upper_threshold = units_and_thresholds[parameter][1]
+    
+        # Create a column 'Color' based on pH values
+        data['Color'] = data['Ph'].apply(lambda x: 'Red' if x < lower_threshold or x > upper_threshold else 'Green')
+    
+        # Create the map for threshold columns
+        fig = px.scatter_mapbox(
+            data.dropna(subset=[parameter]),
+            lat='lat',
+            lon='long',
+            color='Color',
+            size=parameter,
+            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate', 'Total dissolved solids', 'Altitude_(m)'],
+            color_discrete_map={'Red': 'red', 'Green': 'green'},
+            size_max=15,
+            zoom=8
+        )
+        units = units_and_thresholds[parameter][0]
+    
+
     # Set the minimum size of points
     fig.update_traces(marker=dict(sizemin=5))
 
