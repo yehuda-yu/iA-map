@@ -117,7 +117,7 @@ threshold_cols = ['pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Sol
 all_columns = categorical_cols + numerical_cols + threshold_cols
 
 # Allow the user to select a single column as the parameter to show
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 27)
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 25)
 
 try:
     # Check if the selected column belongs to categorical, numerical, or threshold columns
