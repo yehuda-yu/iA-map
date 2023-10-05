@@ -103,7 +103,7 @@ if parameter in categorical_cols:
         lat='lat',
         lon='long',
         color=parameter,
-        hover_data=[parameter, 'Village', 'District'],
+        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
         color_discrete_sequence=px.colors.qualitative.G10,
         zoom=8
     )
@@ -121,7 +121,7 @@ elif parameter in numerical_cols:
         lon='long',
         color=parameter,
         size=parameter,
-        hover_data=[parameter, 'Village', 'District'],
+        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
         hover_name="Village",
         color_continuous_scale='plasma',  # Replace with your desired color scale
         size_max=15,
@@ -146,7 +146,7 @@ elif parameter in threshold_cols:
         lon='long',
         color='Color',
         size=parameter,
-        hover_data=[parameter, 'Village', 'District'],
+        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
         color_discrete_map={'Red': 'red', 'Green': 'green'},
         size_max=15,
         zoom=8
