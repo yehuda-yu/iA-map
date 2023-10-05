@@ -54,7 +54,7 @@ def load_data():
 
 # Define the units and thresholds dictionary
 units_and_thresholds = {
-    "Ph": ("", (9.5, 5.5)),
+    "pH": ("", (9.5, 5.5)),
     "Electrical Conductivity (μS/cm)": ("μS/cm", (2500,)),
     "Total Dissolved Solids (mg/L)": ("mg/L", (1500,)),
     "Colour": ("TCU", (50,)),
@@ -177,7 +177,7 @@ try:
         )
         units = units_and_thresholds[parameter][0]
 
-    elif parameter == 'Ph':
+    elif parameter == 'pH':
         # Get the lower and upper threshold values for pH
         lower_threshold, upper_threshold = units_and_thresholds[parameter][1]
     
