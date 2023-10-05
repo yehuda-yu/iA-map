@@ -133,6 +133,7 @@ try:
             lat='lat',
             lon='long',
             color=parameter,
+            hover_name = 'Village',
             hover_data=hover_list,
             color_discrete_sequence=px.colors.qualitative.G10,
             zoom=8
