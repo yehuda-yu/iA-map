@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Load your dataset
-@st.cache
+@st.cache_data
 def load_data():
     # Load the data from a CSV file
     csv_file = "gdf_84.csv"
