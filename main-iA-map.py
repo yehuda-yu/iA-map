@@ -214,7 +214,7 @@ try:
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
     # add the subtitle with units
-    st.subheader(f"{parameter}: {units}")
+    st.subheader(f"{parameter}")
 
     # Show the map
     st.plotly_chart(fig)
