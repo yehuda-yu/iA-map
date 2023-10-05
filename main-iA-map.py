@@ -129,7 +129,7 @@ try:
             lat='lat',
             lon='long',
             color=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_sequence=px.colors.qualitative.G10,
             zoom=8
         )
@@ -146,7 +146,7 @@ try:
             lon='long',
             color=parameter,
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
             size_max=15,
@@ -170,7 +170,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
@@ -191,7 +191,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate', 'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
