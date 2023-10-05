@@ -4,7 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Load your dataset
-@st.cache_data
+@st.cache
 def load_data():
     # Load the data from a CSV file
     csv_file = "gdf_84.csv"
@@ -90,107 +90,109 @@ threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids'
 all_columns = categorical_cols + numerical_cols + threshold_cols
 
 # Allow the user to select a single column as the parameter to show
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns,27)
+parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 27)
 
-
-
-# Check if the selected column belongs to categorical, numerical, or threshold columns
-if parameter in categorical_cols:
+try:
+    # Check if the selected column belongs to categorical, numerical, or threshold columns
+    if parameter in categorical_cols:
+        
+        # Create the map for categorical columns
+        fig = px.scatter_mapbox(
+            data.dropna(subset=[parameter]),
+            lat='lat',
+            lon='long',
+            color=parameter,
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            color_discrete_sequence=px.colors.qualitative.G10,
+            zoom=8
+        )
+        # define units and threshold value
+        units = ''
+        threshold_value = None
     
-    # Create the map for categorical columns
-    fig = px.scatter_mapbox(
-        data.dropna(subset=[parameter]),
-        lat='lat',
-        lon='long',
-        color=parameter,
-        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
-        color_discrete_sequence=px.colors.qualitative.G10,
-        zoom=8
-    )
-    # define units and threshold value
-    units = ''
-    threshold_value = None
-    pass
+    elif parameter in numerical_cols:
     
-elif parameter in numerical_cols:
+        # Create the map for numerical columns without a threshold
+        fig = px.scatter_mapbox(
+            data.dropna(subset=[parameter]),
+            lat='lat',
+            lon='long',
+            color=parameter,
+            size=parameter,
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            hover_name="Village",
+            color_continuous_scale='plasma',  # Replace with your desired color scale
+            size_max=15,
+            zoom=8
+        )
+        # define units and threshold value by the dictionary
+        units = 'm'
+        threshold_value = None
+        
+    elif parameter in threshold_cols:
+        
+        # Set threshold value and color dictionary based on the selected column and dictionary
+        threshold_value = float(units_and_thresholds[parameter][1][0])
 
-    # Create the map for numerical columns without a threshold
-    fig = px.scatter_mapbox(
-        data.dropna(subset=[parameter]),
-        lat='lat',
-        lon='long',
-        color=parameter,
-        size=parameter,
-        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
-        hover_name="Village",
-        color_continuous_scale='plasma',  # Replace with your desired color scale
-        size_max=15,
-        zoom=8
-    )
-    # define units and threshold value by the dictionary
-    units = 'm'
-    threshold_value = None
-    pass
-    
-elif parameter in threshold_cols:
-    
-    # Set threshold value and color dictionary based on the selected column and dictionary
-    threshold_value = float(units_and_thresholds[parameter][1][0])
+        # create column of color
+        data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
+        # Create the map for threshold columns
+        fig = px.scatter_mapbox(
+            data.dropna(subset=[parameter]),
+            lat='lat',
+            lon='long',
+            color='Color',
+            size=parameter,
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            color_discrete_map={'Red': 'red', 'Green': 'green'},
+            size_max=15,
+            zoom=8
+        )
+        units = units_and_thresholds[parameter][0]
 
-    # create column of color
-    data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
-    # Create the map for threshold columns
-    fig = px.scatter_mapbox(
-        data.dropna(subset=[parameter]),
-        lat='lat',
-        lon='long',
-        color='Color',
-        size=parameter,
-        hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
-        color_discrete_map={'Red': 'red', 'Green': 'green'},
-        size_max=15,
-        zoom=8
-    )
-    units = units_and_thresholds[parameter][0]
-    pass
+    # Set the minimum size of points
+    fig.update_traces(marker=dict(sizemin=5))
 
-# Set the minimum size of points
-fig.update_traces(marker=dict(sizemin=5))
+    # Add a custom legend label with the threshold value if applicable
+    if threshold_value is not None:
+        fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
 
-# Add a custom legend label with the threshold value if applicable
-if threshold_value is not None:
-    fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
+    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
-fig.update_layout(mapbox_style="open-street-map")
-fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    # add the subtitle with units
+    st.subheader(f"{parameter}: {units}")
 
-# add the subtitle with units
-st.subheader(f"{parameter}: {units}")
+    # Show the map
+    st.plotly_chart(fig)
 
-# Show the map
-st.plotly_chart(fig)
+except Exception as e:
+    st.error(f"An error occurred: {e}")
 
-# Create a histogram below the map
-if threshold_value is not None:
+try:
     # Create a histogram below the map
-    fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.8,
-                                 color_discrete_map={'Red': 'red', 'Green': 'green'})
-    fig_histogram.update_layout(title=f"Distribution of {parameter}")
-    
-    # Customize the legend of the histogram
-    fig_histogram.update_layout(
-        legend_title_text=f"Threshold ({threshold_value} {units})",
-        showlegend=True,  # Display the legend
-        coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
-    )
+    if threshold_value is not None:
+        # Create a histogram below the map
+        fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.8,
+                                     color_discrete_map={'Red': 'red', 'Green': 'green'})
+        fig_histogram.update_layout(title=f"Distribution of {parameter}")
+        
+        # Customize the legend of the histogram
+        fig_histogram.update_layout(
+            legend_title_text=f"Threshold ({threshold_value} {units})",
+            showlegend=True,  # Display the legend
+            coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
+        )
 
-else:
-    fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.8,color_discrete_sequence=['indianred'])
-    fig_histogram.update_layout(title=f"Distribution of {parameter}")
-    fig_histogram.update_layout(
-        legend_title_text=f"Units: {units}",
-        showlegend=False
-    )
+    else:
+        fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.8,color_discrete_sequence=['indianred'])
+        fig_histogram.update_layout(title=f"Distribution of {parameter}")
+        fig_histogram.update_layout(
+            legend_title_text=f"Units: {units}",
+            showlegend=False
+        )
 
-st.plotly_chart(fig_histogram)
+    st.plotly_chart(fig_histogram)
 
+except Exception as e:
+    st.error(f"An error occurred: {e}")
