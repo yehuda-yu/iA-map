@@ -27,7 +27,7 @@ def load_data():
 
 # Define the units and thresholds dictionary
 units_and_thresholds = {
-    "Ph": ("", (5.5, 9.5)),
+    "Ph": ("", (9.5, 5.5)),
     "Electrical Conductivity (EC)": ("μS/cm", (2500,)),
     "Total dissolved solids": ("mg/L", (1500,)),
     "Colour": ("TCU", (50,)),
