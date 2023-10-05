@@ -38,6 +38,7 @@ def load_data():
         "Chloride": "Chloride (mg/L)",
         "Nitrate (as NO3-)": "Nitrate as N (mg/L)",
         "Sulphate": "Sulfate (mg/L)",
+        "Manganese":"Manganese (mg/L)"
     }
     data.rename(columns=column_mapping, inplace=True)
     
@@ -61,7 +62,7 @@ units_and_thresholds = {
     "Copper": ("mg/L", (1,)),
     "Flouride": ("mg/L", (1.5,)),
     "Iron": ("mg/L", (0.3,)),
-    "Manganese": ("mg/L", (0.1,)),
+    "Manganese (mg/L)": ("mg/L", (0.1,)),
     "Magneisum (Mg)": ("mg/L", (100,)),
     "Nitrate as N (mg/L)": ("mg/L", (45,)),
     "Sodium (Na)": ("mg/L", (200,)),
