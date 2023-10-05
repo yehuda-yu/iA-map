@@ -153,7 +153,6 @@ try:
             size=parameter,
             hover_name = 'Village',
             hover_data=hover_list,
-            hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
             size_max=15,
             zoom=8
