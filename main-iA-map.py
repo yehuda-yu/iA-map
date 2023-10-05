@@ -27,6 +27,7 @@ def load_data():
     column_mapping = {
         "Depth_of_overburden": "Overburden Thickness (m)",
         "Depth_drilled_in_bedrock": "Depth Drilled in Bedrock (m)",
+        'Total_Depth': 'Total_Depth (m)',
         "Static_Water_Level": "Static Water Level (m)",
         "Stabilized_discharge(L/s)": "Borehole Yield (L/s)",
         "Altitude_(m)": "Elevation (m)",
@@ -106,7 +107,7 @@ st.sidebar.header("Customize Visualization")
 # Define lists of columns
 categorical_cols = ['Village', 'District', 'Date_Completed', 'First Water Strike Depth (m)', 'Second Water Strike Depth (m)',
                    'Third Water Strike Depth (m)', 'Fourth Water Strike Depth (m)', 'Lithology_1', 'Lithology_2']
-numerical_cols = ['Overburden Thickness (m)', 'Total_Depth', 'Depth Drilled in Bedrock (m)', 'First Water Strike Yield (L/s)',
+numerical_cols = ['Overburden Thickness (m)', 'Total_Depth (m)', 'Depth Drilled in Bedrock (m)', 'First Water Strike Yield (L/s)',
                  'Second Water Strike Yield (L/s)', 'Third Water Strike Yield (L/s)', 'Fourth Water Strike Yield (L/s)',
                  'Static Water Level (m)', 'Borehole Yeild (L/s)', 'Elevation (m)']
 threshold_cols = ['pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
@@ -119,6 +120,9 @@ all_columns = categorical_cols + numerical_cols + threshold_cols
 # Allow the user to select a single column as the parameter to show
 parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 25)
 
+# Define Hover list for map
+hover_list = [parameter, 'Village','Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
+
 try:
     # Check if the selected column belongs to categorical, numerical, or threshold columns
     if parameter in categorical_cols:
@@ -129,7 +133,7 @@ try:
             lat='lat',
             lon='long',
             color=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=,
             color_discrete_sequence=px.colors.qualitative.G10,
             zoom=8
         )
@@ -146,7 +150,7 @@ try:
             lon='long',
             color=parameter,
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=hover_list,
             hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
             size_max=15,
@@ -170,7 +174,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate as N (mg/L)','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=hover_list,
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
@@ -191,7 +195,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
+            hover_data=hover_list,
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
