@@ -180,7 +180,6 @@ if threshold_value is not None:
     # Customize the legend of the histogram
     fig_histogram.update_layout(
         legend_title_text=f"Threshold ({threshold_value} {units})",
-        # color_discrete_sequence=['indianred'],
         showlegend=True,  # Display the legend
         coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
     )
