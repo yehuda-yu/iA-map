@@ -95,20 +95,18 @@ st.sidebar.markdown("Select a parameter to visualize from the dropdown menu.")
 # Load the data
 data = load_data()
 
-st.dataframe(data)
-
 # Sidebar for user input
 st.sidebar.header("Customize Visualization")
 
 # Define lists of columns
-categorical_cols = ['Village','District','Date_Completed','First Water Strike Depth (m)', 'Second Water Strike Depth (m)',
-       'Third Water Strike Depth (m)', 'Fourth Water Strike Depth (m)', 'Lithology_1', 'Lithology_2']
-numerical_cols = ['Depth_of_overburden', 'Total_Depth', 'Depth_drilled_in_bedrock','First Water Strike Yield (L/s)', 'Second Water Strike Yield (L/s)',
-       'Third Water Strike Yield (L/s)', 'Fourth Water Strike Yield (L/s)', 'Static_Water_Level', 'Borehole Yeild (L/s)', 'Altitude_(m)',]
-threshold_cols = ['Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
-                       'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
-                       'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
-                       'Manganese', 'Total Coliforms']
+categorical_cols = ['Village', 'District', 'Date_Completed', 'First Water Strike Depth (m)', 'Second Water Strike Depth (m)',
+                   'Third Water Strike Depth (m)', 'Fourth Water Strike Depth (m)', 'Lithology_1', 'Lithology_2']
+numerical_cols = ['Overburden Thickness (m)', 'Total_Depth', 'Depth Drilled in Bedrock (m)', 'First Water Strike Yield (L/s)',
+                 'Second Water Strike Yield (L/s)', 'Third Water Strike Yield (L/s)', 'Fourth Water Strike Yield (L/s)',
+                 'Static Water Level (m)', 'Borehole Yeild (L/s)', 'Elevation (m)']
+threshold_cols = ['pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
+                 'Turbidity (NTU)', 'Hardness (mg/L)', 'Chloride (mg/L)', 'Nitrate as N (mg/L)', 'Sulfate (mg/L)',
+                 'Manganese (mg/L)', 'Total Coliforms (CFU/100 ml)']
 
 # Define all available columns in your dataset
 all_columns = categorical_cols + numerical_cols + threshold_cols
@@ -126,7 +124,7 @@ try:
             lat='lat',
             lon='long',
             color=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_sequence=px.colors.qualitative.G10,
             zoom=8
         )
@@ -143,7 +141,7 @@ try:
             lon='long',
             color=parameter,
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
             size_max=15,
@@ -167,7 +165,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total dissolved solids', 'Altitude_(m)'],
+            hover_data=[parameter, 'Village','Borehole Yeild (L/s)', 'Nitrate','Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
@@ -188,7 +186,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate', 'Total dissolved solids', 'Altitude_(m)'],
+            hover_data=[parameter, 'Village', 'Borehole Yeild (L/s)', 'Nitrate', 'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
             zoom=8
