@@ -36,14 +36,18 @@ def load_data():
         "Turbidity": "Turbidity (NTU)",
         "Hardness": "Hardness (mg/L)",
         "Chloride": "Chloride (mg/L)",
-        "Nitrate (as NO3-)": "Nitrate as N (mg/L)",
+        "Nitrate": "Nitrate as N (mg/L)",
+        "Nitrite": "Nitrite (mg/L)",
+        "Iron": "Iron (mg/L)",
+        "Copper": "Copper (mg/L)",
+        "Flouride": "Flouride (mg/L)",
         "Sulphate": "Sulfate (mg/L)",
         "Manganese":"Manganese (mg/L)"
     }
     data.rename(columns=column_mapping, inplace=True)
     
     # Drop columns
-    columns_to_drop = ["Colour", "Alkalinity", "Suspended solids (total)"]
+    columns_to_drop = ["Colour", "Alkalinity","E.coli", "Suspended solids (total)"]
     data.drop(columns=columns_to_drop, inplace=True)
     
     return data
@@ -64,7 +68,7 @@ units_and_thresholds = {
     "Iron": ("mg/L", (0.3,)),
     "Manganese (mg/L)": ("mg/L", (0.1,)),
     "Magneisum (Mg)": ("mg/L", (100,)),
-    "Nitrate as N (mg/L)": ("mg/L", (45,)),
+    "Nitrate as N (mg/L)": ("mg/L", (10,)),
     "Sodium (Na)": ("mg/L", (200,)),
     "Chlorine Residue": ("mg/L", (0.2, 0.5)),
     "Sulfate (mg/L)": ("mg/L", (400,)),
@@ -72,7 +76,7 @@ units_and_thresholds = {
     "E.coli": ("CFU/100 ml", (0.0001,)),
     "Aluminium (Al)": ("mg/L", (0.2,)),
     "Arsenic (As)": ("mg/L", (0.01,)),
-    "Nitrate": ("mg/L", (10,)),
+    "Nitrate as NO3": ("mg/L", (45,)),
     "Zinc (Zn)": ("mg/L", (3,)),
     "Lead (Pb)": ("mg/L", (0.01,)),
     "Mercury (Hg)": ("mg/L", (0.001,)),
