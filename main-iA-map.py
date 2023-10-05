@@ -10,44 +10,48 @@ def load_data():
     csv_file = "gdf_84.csv"
     data = pd.read_csv(csv_file)
     
-    # Convert relevant columns to numeric
-    numeric_columns = ['lat', 'long', 'pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
-                       'Turbidity (NTU)', 'Alkalinity (mg/L)', 'Hardness (mg/L)', 'Chloride (mg/L)',
-                       'Nitrate as N (mg/L)', 'Nitrite (mg/L)', 'Iron (mg/L)', 'Copper (mg/L)',
-                       'Flouride (mg/L)', 'Sulfate (mg/L)', 'Suspended solids (mg/L)',
-                       'Manganese (mg/L)']
-    
-    data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
-
     # Rename columns
     column_rename_dict = {
         "Depth of Overburden": "Overburden Thickness (m)",
         "Depth Drilled in Bedrock (m)": "Depth Drilled in Bedrock (m)",
         "Static Water Level (m)": "Static Water Level (m)",
-        "Stabilized Discharge": "Borehole Yield (l/s)",
+        "Stabilized Discharge": "Borehole Yield (L/s)",
         "Altitude": "Elevation (m)",
-        "pH": "pH",
-        "Electrical Conductivity (μS/cm)": "Electrical Conductivity (μS/cm)",
-        "Total Dissolved Solids (mg/L)": "Total Dissolved Solids (mg/L)",
-        "Turbidity (NTU)": "Turbidity (NTU)",
-        "Alkalinity (mg/L)": "Alkalinity (mg/L)",
-        "Hardness (mg/L)": "Hardness (mg/L)",
-        "Chloride (mg/L)": "Chloride (mg/L)",
-        "Nitrate as N (mg/L)": "Nitrate as N (mg/L)",
-        "Nitrite (mg/L)": "Nitrite (mg/L)",
-        "Iron (mg/L)": "Iron (mg/L)",
-        "Copper (mg/L)": "Copper (mg/L)",
-        "Flouride (mg/L)": "Flouride (mg/L)",
-        "Sulfate (mg/L)": "Sulfate (mg/L)",
-        "Suspended solids (mg/L)": "Suspended solids (mg/L)",
-        "Manganese (mg/L)": "Manganese (mg/L)"
+        "Ph": "pH",
+        "Electrical Conductivity (EC)": "Electrical Conductivity (μS/cm)",
+        "Total dissolved solids": "Total Dissolved Solids (mg/L)",
+        "Turbidity": "Turbidity (NTU)",
+        "Colour": "Colour",
+        "Alkalinity": "Alkalinity (mg/L)",
+        "Hardness": "Hardness (mg/L)",
+        "Chloride": "Chloride (mg/L)",
+        "Nitrate as N": "Nitrate as N (mg/L)",
+        "Nitrite": "Nitrite (mg/L)",
+        "Iron": "Iron (mg/L)",
+        "Copper": "Copper (mg/L)",
+        "Flouride": "Flouride (mg/L)",
+        "Sulphate": "Sulfate (mg/L)",
+        "E.coli": "E.coli",
+        "Suspended solids (total)": "Suspended solids (mg/L)",
+        "Manganese": "Manganese (mg/L)",
+        "Total Coliforms": "Total Coliforms",
     }
     
     data = data.rename(columns=column_rename_dict)
     
     # Drop columns to remove
-    columns_to_remove = ["Colour", "Alkalinity (mg/L)", "Ecoli", "Suspended solids (mg/L)", "Total Coliforms"]
+    columns_to_remove = ["Alkalinity (mg/L)", "E.coli", "Suspended solids (mg/L)", "Total Coliforms"]
     data = data.drop(columns=columns_to_remove, errors='ignore')
+    
+    # Convert relevant columns to numeric
+    numeric_columns = ['lat', 'long', 'pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
+                       'Turbidity (NTU)', 'Hardness (mg/L)', 'Chloride (mg/L)',
+                       'Nitrate as N (mg/L)', 'Nitrite (mg/L)', 'Iron (mg/L)', 'Copper (mg/L)',
+                       'Flouride (mg/L)', 'Sulfate (mg/L)', 'Suspended solids (mg/L)',
+                       'Manganese (mg/L)', 'Overburden Thickness (m)', 'Depth Drilled in Bedrock (m)',
+                       'Static Water Level (m)', 'Borehole Yield (L/s)', 'Elevation (m)']
+    
+    data[numeric_columns] = data[numeric_columns].apply(pd.to_numeric, errors='coerce')
     
     return data
 
@@ -83,7 +87,7 @@ st.sidebar.header("Customize Visualization")
 # Define lists of columns
 categorical_cols = ['Village', 'District', 'Date_Completed', 'Lithology_1', 'Lithology_2']
 numerical_cols = ['Overburden Thickness (m)', 'Depth Drilled in Bedrock (m)', 'Static Water Level (m)',
-                   'Borehole Yield (l/s)', 'Elevation (m)']
+                   'Borehole Yield (L/s)', 'Elevation (m)']
 threshold_cols = ['pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
                    'Turbidity (NTU)', 'Hardness (mg/L)', 'Chloride (mg/L)', 'Nitrate as N (mg/L)',
                    'Nitrite (mg/L)', 'Iron (mg/L)', 'Copper (mg/L)', 'Flouride (mg/L)', 'Sulfate (mg/L)',
@@ -105,7 +109,7 @@ try:
             lat='lat',
             lon='long',
             color=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yield (l/s)', 'Nitrate as N (mg/L)',
+            hover_data=[parameter, 'Village', 'Borehole Yield (L/s)', 'Nitrate as N (mg/L)',
                         'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_sequence=px.colors.qualitative.G10,
             zoom=8
@@ -123,7 +127,7 @@ try:
             lon='long',
             color=parameter,
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yield (l/s)', 'Nitrate as N (mg/L)',
+            hover_data=[parameter, 'Village', 'Borehole Yield (L/s)', 'Nitrate as N (mg/L)',
                         'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
@@ -148,7 +152,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yield (l/s)', 'Nitrate as N (mg/L)',
+            hover_data=[parameter, 'Village', 'Borehole Yield (L/s)', 'Nitrate as N (mg/L)',
                         'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
@@ -170,7 +174,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
-            hover_data=[parameter, 'Village', 'Borehole Yield (l/s)', 'Nitrate as N (mg/L)',
+            hover_data=[parameter, 'Village', 'Borehole Yield (L/s)', 'Nitrate as N (mg/L)',
                         'Total Dissolved Solids (mg/L)', 'Elevation (m)'],
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
