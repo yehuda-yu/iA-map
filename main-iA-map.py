@@ -42,7 +42,7 @@ def load_data():
     data.rename(columns=column_mapping, inplace=True)
     
     # Drop columns
-    columns_to_drop = ["Colour", "Alkalinity", "Ecoli", "Suspended solids (total)"]
+    columns_to_drop = ["Colour", "Alkalinity", "Suspended solids (total)"]
     data.drop(columns=columns_to_drop, inplace=True)
     
     return data
