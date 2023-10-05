@@ -121,7 +121,7 @@ all_columns = categorical_cols + numerical_cols + threshold_cols
 parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 25)
 
 # Define Hover list for map
-hover_list = [parameter, 'Village','Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
+hover_list = [parameter,'Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
 
 try:
     # Check if the selected column belongs to categorical, numerical, or threshold columns
@@ -151,6 +151,7 @@ try:
             lon='long',
             color=parameter,
             size=parameter,
+            hover_name = 'Village',
             hover_data=hover_list,
             hover_name="Village",
             color_continuous_scale='plasma',  # Replace with your desired color scale
@@ -175,6 +176,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
+            hover_name = 'Village',
             hover_data=hover_list,
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
@@ -196,6 +198,7 @@ try:
             lon='long',
             color='Color',
             size=parameter,
+            hover_name = 'Village',
             hover_data=hover_list,
             color_discrete_map={'Red': 'red', 'Green': 'green'},
             size_max=15,
