@@ -92,6 +92,8 @@ all_columns = categorical_cols + numerical_cols + threshold_cols
 # Allow the user to select a single column as the parameter to show
 parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns,27)
 
+
+
 # Check if the selected column belongs to categorical, numerical, or threshold columns
 if parameter in categorical_cols:
     
@@ -162,6 +164,8 @@ if threshold_value is not None:
 fig.update_layout(mapbox_style="open-street-map")
 fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
+# add the subtitle with units
+st.subheader(f"{parameter}: {units})
 
 # Show the map
 st.plotly_chart(fig)
