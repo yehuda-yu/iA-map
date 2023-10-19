@@ -339,6 +339,7 @@ def load_map(data,parameter):
     return m 
 
 # App UI
+st.set_page_config(layout="wide")
 st.title("Water Drilling Points in Uganda")
 
 # Provide instructions to users
