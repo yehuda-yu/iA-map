@@ -362,7 +362,7 @@ with c1:
 
     m1 = load_map(data, parameter1) 
     Draw(export=True).add_to(m1)
-    st_folium(m1, width=350, height=500)
+    st_folium(m1, width=700, height=500)
 
 with c2:
 
@@ -374,7 +374,7 @@ with c2:
 
     m2 = load_map(data, parameter2)
     Draw(export=True).add_to(m2)
-    st_folium(m2, width=350, height=500)
+    st_folium(m2, width=700, height=500)
 
 # m = load_map(data, parameter) 
 # Draw(export=True).add_to(m)
