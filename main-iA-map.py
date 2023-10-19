@@ -359,6 +359,7 @@ with c1:
 
     # title for map
     st.write(f"Map1: {parameter1}")
+    st.write(f"Threshold: {units_and_thresholds[parameter][1][0]}")
 
     m1 = load_map(data, parameter1) 
     Draw(export=True).add_to(m1)
