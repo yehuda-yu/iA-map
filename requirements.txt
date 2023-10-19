@@ -2,4 +2,6 @@ streamlit
 pandas
 numpy
 matplotlib
-plotly
+folium
+branca
+streamlit_folium
