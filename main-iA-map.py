@@ -1,13 +1,16 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
+import folium
+from branca.colormap import LinearColormap
+from branca.colormap import linear
+from streamlit_folium import st_folium
+from folium.plugins import Draw
+
 
 # Load your dataset
-@st.cache_data
 def load_data():
     # Load the data from a CSV file
-    csv_file = "gdf_84.csv"
+    csv_file = r"gdf_84.csv"
     data = pd.read_csv(csv_file)
     
     # Convert relevant columns to numeric
@@ -90,165 +93,290 @@ units_and_thresholds = {
     "Cobalt (Co)": ("mg/L", ("-")),
 }
 
-# App UI
-st.title("Water Drilling Points in Uganda")
-
-
-# Provide instructions to users
-st.sidebar.header("Instructions")
-st.sidebar.markdown("Select a parameter to visualize from the dropdown menu.")
 
 # Load the data
 data = load_data()
 
-# Sidebar for user input
-st.sidebar.header("Customize Visualization")
-
 # Define lists of columns
 categorical_cols = ['Village', 'District', 'Date_Completed', 'First Water Strike Depth (m)', 'Second Water Strike Depth (m)',
-                   'Third Water Strike Depth (m)', 'Fourth Water Strike Depth (m)', 'Lithology_1', 'Lithology_2']
+            'Third Water Strike Depth (m)', 'Fourth Water Strike Depth (m)', 'Lithology_1', 'Lithology_2']
+
 numerical_cols = ['Overburden Thickness (m)', 'Total_Depth (m)', 'Depth Drilled in Bedrock (m)', 'First Water Strike Yield (L/s)',
-                 'Second Water Strike Yield (L/s)', 'Third Water Strike Yield (L/s)', 'Fourth Water Strike Yield (L/s)',
-                 'Static Water Level (m)', 'Borehole Yeild (L/s)', 'Elevation (m)']
+                'Second Water Strike Yield (L/s)', 'Third Water Strike Yield (L/s)', 'Fourth Water Strike Yield (L/s)',
+                'Static Water Level (m)', 'Borehole Yield (L/s)', 'Elevation (m)']
+
 threshold_cols = ['pH', 'Electrical Conductivity (μS/cm)', 'Total Dissolved Solids (mg/L)',
-                 'Turbidity (NTU)', 'Hardness (mg/L)', 'Chloride (mg/L)', 'Nitrate as N (mg/L)', 'Sulfate (mg/L)',
-                 'Manganese (mg/L)', 'Total Coliforms (CFU/100 ml)']
+                'Turbidity (NTU)', 'Hardness (mg/L)', 'Chloride (mg/L)', 'Nitrate as N (mg/L)', 'Sulfate (mg/L)',
+                'Manganese (mg/L)', 'Total Coliforms']
 
-# Define all available columns in your dataset
-all_columns = categorical_cols + numerical_cols + threshold_cols
 
-# Allow the user to select a single column as the parameter to show
-parameter = st.sidebar.selectbox("Select a Parameter to Visualize", all_columns, 25)
+def load_map(data,parameter):
 
-# Define Hover list for map
-hover_list = [parameter,'Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
-
-try:
     # Check if the selected column belongs to categorical, numerical, or threshold columns
     if parameter in categorical_cols:
-        
-        # Create the map for categorical columns
-        fig = px.scatter_mapbox(
-            data.dropna(subset=[parameter]),
-            lat='lat',
-            lon='long',
-            color=parameter,
-            hover_name = 'Village',
-            hover_data=hover_list,
-            color_discrete_sequence=px.colors.qualitative.G10,
-            zoom=8
+
+        # load tata
+        data = load_data()
+
+        # Drop the rows with missing values
+        data = data.dropna(subset=[parameter])
+
+        # Create a map object
+        m = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9, tiles='openstreetmap')
+
+        # Add Esri Satellite tile layer
+        tile = folium.TileLayer(
+            tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr='Esri',
+            name='Esri Satellite',
+            overlay=False,
+            control=True
         )
-        # define units and threshold value
-        units = ''
-        threshold_value = None
+        tile.add_to(m)
+
+        # Add Stamen Terrain map layer
+        folium.TileLayer(
+            tiles='https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+            attr='Stamen',
+            name='Stamen',
+            overlay=False,
+            control=True,
+        ).add_to(m)
+
+        for index, row in data.iterrows():
+            loc = (row['lat'], row['long'])
+            popup_text = f"""<b>Village: {row['Village']}</b><br>  
+                            lat: {row['lat']}<br>
+                            long: {row['long']}<br>
+                            {parameter}: {row[parameter]}<br>
+                            Total_Depth (m): {row['Total_Depth (m)']}<br>
+                            Borehole Yeild (L/s): {row['Borehole Yeild (L/s)']}<br>
+                            Nitrate as N (mg/L): {row['Nitrate as N (mg/L)']}<br>
+                            Electrical Conductivity (μS/cm): {row['Electrical Conductivity (μS/cm)']}<br>
+                        """
+
+            # color = categorical_colors(data[parameter].unique().tolist().index(row[parameter]))
+
+            folium.Circle(
+                location=loc,
+                popup=folium.Popup(popup_text, max_width=450),
+                radius=100,
+                fill=True,
+                color='YlGnBu',
+                capacity=.9,
+            ).add_to(m)
+
+        # Add legends and layer control
+        folium.LayerControl().add_to(m)
+
     
-    elif parameter in numerical_cols:
-    
-        # Create the map for numerical columns without a threshold
-        fig = px.scatter_mapbox(
-            data.dropna(subset=[parameter]),
-            lat='lat',
-            lon='long',
-            color=parameter,
-            size=parameter,
-            hover_name = 'Village',
-            hover_data=hover_list,
-            color_continuous_scale='plasma',  # Replace with your desired color scale
-            size_max=15,
-            zoom=8
-        )
-        # define units and threshold value by the dictionary
-        units = 'm'
-        threshold_value = None
-        
     elif parameter in threshold_cols:
         
         # Set threshold value and color dictionary based on the selected column and dictionary
         threshold_value = float(units_and_thresholds[parameter][1][0])
 
-        # create column of color
-        data['Color'] = data[parameter].apply(lambda x: 'Red' if x >= threshold_value else 'Green')
-        # Create the map for threshold columns
-        fig = px.scatter_mapbox(
-            data.dropna(subset=[parameter]),
-            lat='lat',
-            lon='long',
-            color='Color',
-            size=parameter,
-            hover_name = 'Village',
-            hover_data=hover_list,
-            color_discrete_map={'Red': 'red', 'Green': 'green'},
-            size_max=15,
-            zoom=8
-        )
-        units = units_and_thresholds[parameter][0]
+        # load tata
+        data = load_data()
 
-    elif parameter == 'pH':
-        # Get the lower and upper threshold values for pH
-        lower_threshold, upper_threshold = units_and_thresholds[parameter][1]
-    
-        # Create a column 'Color' based on pH values
-        data['Color'] = data['Ph'].apply(lambda x: 'Red' if x < lower_threshold or x > upper_threshold else 'Green')
-    
-        # Create the map for threshold columns
-        fig = px.scatter_mapbox(
-            data.dropna(subset=[parameter]),
-            lat='lat',
-            lon='long',
-            color='Color',
-            size=parameter,
-            hover_name = 'Village',
-            hover_data=hover_list,
-            color_discrete_map={'Red': 'red', 'Green': 'green'},
-            size_max=15,
-            zoom=8
-        )
-        units = units_and_thresholds[parameter][0]
-    
+        # Drop the rows with missing values
+        data = data.dropna(subset=[parameter])
 
-    # Set the minimum size of points
-    fig.update_traces(marker=dict(sizemin=5))
+        # Function to determine the color based on the threshold
+        def get_color(value):
+            if value >= threshold_value:
+                return 'red'
+            else:
+                return 'green'
 
-    # Add a custom legend label with the threshold value if applicable
-    if threshold_value is not None:
-        fig.update_layout(legend_title_text=f"Threshold ({threshold_value} {units})")
-
-    fig.update_layout(mapbox_style="open-street-map")
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-
-    # add the subtitle with units
-    st.subheader(f"{parameter}")
-
-    # Show the map
-    st.plotly_chart(fig)
-
-except Exception as e:
-    st.error(f"An error occurred: {e}")
-
-try:
-    # Create a histogram below the map
-    if threshold_value is not None:
-        # Create a histogram below the map
-        fig_histogram = px.histogram(data, x=parameter, color='Color', nbins=20, opacity=0.8,
-                                     color_discrete_map={'Red': 'red', 'Green': 'green'})
-        fig_histogram.update_layout(title=f"Distribution of {parameter}")
-        
-        # Customize the legend of the histogram
-        fig_histogram.update_layout(
-            legend_title_text=f"Threshold ({threshold_value} {units})",
-            showlegend=True,  # Display the legend
-            coloraxis_colorbar=dict(title="", tickvals=[0, 1], ticktext=["Below", "Above"])
+        # Define the colormap
+        colormap = LinearColormap(
+            colors=['green', 'red'],
+            vmin=data[parameter].min(),
+            vmax=data[parameter].max()
         )
 
-    else:
-        fig_histogram = px.histogram(data, x=parameter, nbins=20, opacity=0.8,color_discrete_sequence=['indianred'])
-        fig_histogram.update_layout(title=f"Distribution of {parameter}")
-        fig_histogram.update_layout(
-            legend_title_text=f"Units: {units}",
-            showlegend=False
+        # Create a map object
+        m = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9, tiles='openstreetmap')
+
+        # Add Esri Satellite tile layer
+        tile = folium.TileLayer(
+            tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr='Esri',
+            name='Esri Satellite',
+            overlay=False,
+            control=True
         )
+        tile.add_to(m)
 
-    st.plotly_chart(fig_histogram)
+        # Add Stamen Terrain map layer
+        folium.TileLayer(
+            tiles='https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+            attr='Stamen',
+            name='Stamen',
+            overlay=False,
+            control=True,
+        ).add_to(m)
 
-except Exception as e:
-    st.error(f"An error occurred: {e}")
+        for loc, p in zip(zip(data["lat"], data["long"]), data[parameter]):
+            # Determine the color based on the threshold
+            color = get_color(p)
+
+            # Popup text based on index
+            index = data.index[(data['lat'] == loc[0]) & (data['long'] == loc[1])].tolist()
+
+            # Create popup text with Village as the title
+            popup_text = f"<b>Village: {data.loc[index[0], 'Village']}</b><br>"  # Village as title
+            popup_text += f"lat: {data.loc[index[0], 'lat']}<br>"
+            popup_text += f"long: {data.loc[index[0], 'long']}<br>"
+            popup_text += f"{parameter}: {data.loc[index[0], parameter]}<br>"
+            popup_text += f"Total_Depth (m): {data.loc[index[0], 'Total_Depth (m)']}<br>"
+            popup_text += f"Borehole Yeild (L/s): {data.loc[index[0], 'Borehole Yeild (L/s)']}<br>"
+            popup_text += f"Nitrate as N (mg/L): {data.loc[index[0], 'Nitrate as N (mg/L)']}<br>"
+            popup_text += f"Electrical Conductivity (μS/cm): {data.loc[index[0], 'Electrical Conductivity (μS/cm)']}<br>"
+
+            folium.Circle(
+                location=loc,
+                popup=folium.Popup(popup_text, max_width=450),
+                radius=20,  # yarıçap
+                fill=True,
+                color=color,  # Use the color determined by the threshold
+                capacity=0.9,
+            ).add_to(m)
+
+        # Add legends and layer control
+        folium.LayerControl().add_to(m)
+
+        # Add the colorbar to the map
+        colormap.add_to(m)
+
+    elif parameter in numerical_cols:
+
+        # load tata
+        data = load_data()
+
+        # Drop the rows with missing values
+        data = data.dropna(subset=[parameter])
+
+        # define popup text
+        popup_list = ['Village', 'lat','long',parameter,'Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
+
+        # define popup text based on the columns in the popup_list
+        # popup_text = '<br>'.join([f'{col}: {data.iloc[i][col]}' for col in popup_list])
+
+        # Define the Viridis color map
+        colormap = LinearColormap(colors=['#264653', '#287271', '#2a9d8f', '#8ab17d', '#babb74', '#e9c46a', '#efb366', '#f4a261', '#ee8959', '#e76f51'],
+                                    vmin=data[parameter].min(),
+                                    vmax=data[parameter].max())
+
+
+        # plot using folium
+        # Create a map object
+        m = folium.Map(location=[data['lat'].mean(), data['long'].mean()], zoom_start=9, tiles='openstreetmap')
+
+        # Add Esri Satellite tile layer
+        tile = folium.TileLayer(
+            tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+            attr='Esri',
+            name='Esri Satellite',
+            overlay=False,
+            control=True
+        )
+        tile.add_to(m)
+
+        # Add Stamen Terrain map layer
+        folium.TileLayer(
+            tiles='https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png',
+            attr='Stamen',
+            name='Stamen',
+            overlay=False,
+            control=True,
+        ).add_to(m)
+
+        for loc, p in zip(zip(data["lat"],data["long"]),data[parameter]):
+            
+            # popup text based on index
+            index = data.index[(data['lat'] == loc[0]) & (data['long'] == loc[1])].tolist()
+            #   add popup text based on list of columns
+
+            popup_text = """<b>Village: {}</b><br>
+                            lat: {}<br>
+                            long: {}<br>
+                            parameter: {}<br>
+                            Total_Depth (m): {}<br>
+                            Borehole Yeild (L/s): {}<br>
+                            Nitrate as N (mg/L): {}<br>
+                            Electrical Conductivity (μS/cm): {}<br>
+                            """
+            
+            popup_text = popup_text.format(
+                                            data.loc[index[0], "Village"],
+                                            data.loc[index[0], "lat"],
+                                            data.loc[index[0], "long"],
+                                            data.loc[index[0], parameter],
+                                            data.loc[index[0], "Total_Depth (m)"],
+                                            data.loc[index[0], "Borehole Yeild (L/s)"],
+                                            data.loc[index[0], "Nitrate as N (mg/L)"],
+                                            data.loc[index[0], "Electrical Conductivity (μS/cm)"]
+                                            )
+
+            folium.Circle(
+            location=loc,
+            popup=folium.Popup(popup_text,max_width=450),
+            radius=20, 
+            fill=True, 
+            color=colormap(p),
+            capacity=0.9,
+        ).add_to(m)
+
+        # add laegends and layer control
+        folium.LayerControl().add_to(m)
+
+        # add colormap to map
+        colormap.caption = parameter
+        colormap.add_to(m)
+
+
+    return m 
+
+# App UI
+st.title("Water Drilling Points in Uganda")
+
+# Provide instructions to users
+st.header("Instructions")
+st.markdown("Select a parameter to visualize from the dropdown menu.")
+
+# Define all available columns in your dataset
+all_columns = categorical_cols + numerical_cols + threshold_cols
+
+c1, c2 = st.columns(2)
+
+
+with c1:
+
+    # Allow the user to select a single column as the parameter to show
+    parameter1 = st.selectbox("Select a Parameter to Visualize", all_columns, 25)
+
+    # title for map
+    st.write(f"Map1: {parameter1}")
+
+    m1 = load_map(data, parameter1) 
+    Draw(export=True).add_to(m1)
+    st_folium(m1, width=350, height=500)
+
+with c2:
+
+    # Allow the user to select a single column as the parameter to show
+    parameter2 = st.selectbox("Select a Parameter to Visualize", all_columns, 20)
+
+    # title for map
+    st.write(f"Map2: {parameter2}")
+
+    m2 = load_map(data, parameter2)
+    Draw(export=True).add_to(m2)
+    st_folium(m2, width=350, height=500)
+
+# m = load_map(data, parameter) 
+# Draw(export=True).add_to(m)
+
+# st_folium(m, width=700, height=500)
+# m.to_streamlit(width=700, height=500, add_layer_control=True)
