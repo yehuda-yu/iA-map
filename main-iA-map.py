@@ -184,9 +184,9 @@ def load_map(data,parameter):
         # Function to determine the color based on the threshold
         def get_color(value):
             if value >= threshold_value:
-                return 'red'
+                return '#D81B60'
             else:
-                return 'green'
+                return '#004D40'
 
         # Define the colormap
         colormap = LinearColormap(
