@@ -190,7 +190,7 @@ def load_map(data,parameter):
 
         # Define the colormap
         colormap = LinearColormap(
-            colors=['green', 'red'],
+            colors=['#004D40', '#D81B60'],
             vmin=data[parameter].min(),
             vmax=data[parameter].max()
         )
