@@ -359,7 +359,7 @@ with c1:
 
     # title for map
     st.write(f"Map1: {parameter1}")
-    st.write(f"Threshold: {units_and_thresholds[parameter1][1][0]}")
+    # st.write(f"Threshold: {units_and_thresholds[parameter1][1][0]}")
 
     m1 = load_map(data, parameter1) 
     Draw(export=True).add_to(m1)
@@ -372,7 +372,7 @@ with c2:
 
     # title for map
     st.write(f"Map2: {parameter2}")
-    st.write(f"Threshold: {units_and_thresholds[parameter2][1][0]}")
+    # st.write(f"Threshold: {units_and_thresholds[parameter2][1][0]}")
 
     m2 = load_map(data, parameter2)
     Draw(export=True).add_to(m2)
