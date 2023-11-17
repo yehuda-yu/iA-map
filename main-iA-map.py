@@ -149,7 +149,7 @@ def load_map(data,parameter):
                             long: {row['long']}<br>
                             {parameter}: {row[parameter]}<br>
                             Total_Depth (m): {row['Total_Depth (m)']}<br>
-                            Borehole Yeild (L/s): {row['Borehole Yeild (L/s)']}<br>
+                            Borehole Yield (L/s): {row['Borehole Yield (L/s)']}<br>
                             Nitrate as N (mg/L): {row['Nitrate as N (mg/L)']}<br>
                             Electrical Conductivity (μS/cm): {row['Electrical Conductivity (μS/cm)']}<br>
                         """
