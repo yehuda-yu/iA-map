@@ -160,7 +160,7 @@ def load_map(data,parameter):
             folium.Circle(
                 location=loc,
                 popup=folium.Popup(popup_text, max_width=450),
-                radius=500,
+                radius=1000,
                 fill=True,
                 color='YlGnBu',
                 capacity=.9,
