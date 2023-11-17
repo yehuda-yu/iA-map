@@ -385,4 +385,4 @@ with c2:
 # m.to_streamlit(width=700, height=500, add_layer_control=True)
 
 data = load_data()
-#st.dataframe(data[['Borehole Yield (L/s)']])
+st.dataframe(data[['Borehole Yield (L/s)']])
