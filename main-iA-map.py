@@ -14,7 +14,7 @@ def load_data():
     data = pd.read_csv(csv_file)
     
     # Convert relevant columns to numeric
-    numeric_columns = ['lat', 'long', 'Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids',
+    numeric_columns = ['lat', 'long', 'Ph', 'Electrical Conductivity (EC)', 'Total dissolved solids','Stabilized_discharge(L/s)',
                        'Turbidity', 'Colour', 'Alkalinity', 'Hardness', 'Chloride', 'Nitrate', 'Nitrite',
                        'Iron', 'Copper', 'Flouride', 'Sulphate', 'E.coli', 'Suspended solids (total)',
                        'Manganese', 'Total Coliforms']
