@@ -229,7 +229,7 @@ def load_map(data,parameter):
             popup_text += f"long: {data.loc[index[0], 'long']}<br>"
             popup_text += f"{parameter}: {data.loc[index[0], parameter]}<br>"
             popup_text += f"Total_Depth (m): {data.loc[index[0], 'Total_Depth (m)']}<br>"
-            popup_text += f"Borehole Yeild (L/s): {data.loc[index[0], 'Borehole Yeild (L/s)']}<br>"
+            popup_text += f"Borehole Yield (L/s): {data.loc[index[0], 'Borehole Yield (L/s)']}<br>"
             popup_text += f"Nitrate as N (mg/L): {data.loc[index[0], 'Nitrate as N (mg/L)']}<br>"
             popup_text += f"Electrical Conductivity (μS/cm): {data.loc[index[0], 'Electrical Conductivity (μS/cm)']}<br>"
 
@@ -257,7 +257,7 @@ def load_map(data,parameter):
         data = data.dropna(subset=[parameter])
 
         # define popup text
-        popup_list = ['Village', 'lat','long',parameter,'Total_Depth (m)', 'Borehole Yeild (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
+        popup_list = ['Village', 'lat','long',parameter,'Total_Depth (m)', 'Borehole Yield (L/s)', 'Nitrate as N (mg/L)', 'Electrical Conductivity (μS/cm)']
 
         # define popup text based on the columns in the popup_list
         # popup_text = '<br>'.join([f'{col}: {data.iloc[i][col]}' for col in popup_list])
@@ -302,7 +302,7 @@ def load_map(data,parameter):
                             long: {}<br>
                             parameter: {}<br>
                             Total_Depth (m): {}<br>
-                            Borehole Yeild (L/s): {}<br>
+                            Borehole Yield (L/s): {}<br>
                             Nitrate as N (mg/L): {}<br>
                             Electrical Conductivity (μS/cm): {}<br>
                             """
@@ -313,7 +313,7 @@ def load_map(data,parameter):
                                             data.loc[index[0], "long"],
                                             data.loc[index[0], parameter],
                                             data.loc[index[0], "Total_Depth (m)"],
-                                            data.loc[index[0], "Borehole Yeild (L/s)"],
+                                            data.loc[index[0], "Borehole Yield (L/s)"],
                                             data.loc[index[0], "Nitrate as N (mg/L)"],
                                             data.loc[index[0], "Electrical Conductivity (μS/cm)"]
                                             )
