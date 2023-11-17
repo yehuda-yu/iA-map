@@ -24,7 +24,7 @@ def load_data():
     # replace 'BH Depth_1', 'BH Depth_2','BH Depth_3', 'BH Depth_4', 'Yield_L/s_1' names to 'First Water Strike Depth (m)'...
     data = data.rename(columns={'BH Depth_1': 'First Water Strike Depth (m)', 'BH Depth_2': 'Second Water Strike Depth (m)', 'BH Depth_3': 'Third Water Strike Depth (m)', 'BH Depth_4': 'Fourth Water Strike Depth (m)', })
     # replace Yield_L/s_1 to First Water Strike Yield (L/s)...
-    data = data.rename(columns={'Yield_L/s_1': 'First Water Strike Yield (L/s)', 'Yield_L/s_2': 'Second Water Strike Yield (L/s)', 'Yield_L/s_3': 'Third Water Strike Yield (L/s)', 'Yield_L/s_4': 'Fourth Water Strike Yield (L/s)'})
+    data = data.rename(columns={'Yield_L/s_1': 'First Water Strike Yield (L/s)', 'Yield_L/s_2': 'Second Water Strike Yield (L/s)', 'Yield_L/s_3': 'Third Water Strike Yield (L/s)', 'Yield_L/s_4': 'Fourth Water Strike Yield (L/s)',"Stabilized_discharge(L/s)": "Borehole Yield (L/s)",})
 
         # Rename columns
     column_mapping = {
@@ -32,7 +32,6 @@ def load_data():
         "Depth_drilled_in_bedrock": "Depth Drilled in Bedrock (m)",
         'Total_Depth': 'Total_Depth (m)',
         "Static_Water_Level": "Static Water Level (m)",
-        "Stabilized_discharge(L/s)": "Borehole Yield (L/s)",
         "Altitude_(m)": "Elevation (m)",
         "Ph": "pH",
         "Electrical Conductivity (EC)": "Electrical Conductivity (μS/cm)",
